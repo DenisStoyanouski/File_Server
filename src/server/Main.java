@@ -1,6 +1,7 @@
 package server;
 
 import java.util.HashSet;
+import java.util.Scanner;
 import java.util.Set;
 
 public class Main {
@@ -10,7 +11,12 @@ public class Main {
     }
 
     private static void run() {
+        String[] commands = getInput().split("\\s");
+    }
 
+    private static String getInput() {
+        Scanner scanner = new Scanner(System.in);
+        return scanner.nextLine();
     }
 }
 
