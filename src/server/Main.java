@@ -1,11 +1,16 @@
 package server;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Main {
+
     private static Set<String> server = new HashSet<>();
+
     public static void main(String[] args) {
         run();
     }
@@ -22,7 +27,7 @@ public class Main {
             if (commands.length > 1) {
                 fileName = commands[1];
             }
-            switch (command) {
+            switch (Objects.requireNonNull(command)) {
                 case "add" : add(fileName);
                 break;
                 case "get" : get(fileName);
@@ -30,12 +35,18 @@ public class Main {
                 case "delete" : delete(fileName);
                 break;
                 case "exit" : System.exit(0);
+                break;
+                default:
+                    System.out.println("Unknown command");
             }
         }
     }
 
     private static void add(String fileName) {
-        if (server.add(fileName)) {
+        Pattern pattern = Pattern.compile("\\bfile(1|2|3|4|5|6|7|8|9|10)\\b");
+        Matcher matcher = pattern.matcher(fileName);
+
+        if (matcher.matches() && server.add(fileName)) {
             System.out.printf("The file %s added successfully%n", fileName);
         } else {
             System.out.printf("Cannot add the file %s.%n", fileName);
