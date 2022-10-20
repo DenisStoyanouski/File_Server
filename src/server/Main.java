@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 public class Main {
 
     private static Set<String> server = new HashSet<>();
@@ -19,6 +20,7 @@ public class Main {
         String command = null;
         String fileName = null;
 
+
         while (true) {
             String[] commands = getInput().split("\\s");
             if (commands.length > 0) {
@@ -28,7 +30,7 @@ public class Main {
                 fileName = commands[1];
             }
             switch (Objects.requireNonNull(command)) {
-                case "add" : add(fileName);
+                case "add" :  add(fileName);
                 break;
                 case "get" : get(fileName);
                 break;
@@ -49,7 +51,7 @@ public class Main {
         if (matcher.matches() && server.add(fileName)) {
             System.out.printf("The file %s added successfully%n", fileName);
         } else {
-            System.out.printf("Cannot add the file %s.%n", fileName);
+            System.out.printf("Cannot add the file %s%n", fileName);
         }
 
     }
@@ -87,9 +89,10 @@ public class Main {
         }
 
         public String getName() {
-            return name;
+            return this.name;
         }
 
     }
+
 }
 
