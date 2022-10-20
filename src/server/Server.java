@@ -13,13 +13,17 @@ public class Server {
     private static final String SERVER_ADDRESS = "127.0.0.1";
 
     public static void main(String[] args) {
+        System.out.println("Server started!");
         try (ServerSocket server = new ServerSocket(PORT, 50, InetAddress.getByName(SERVER_ADDRESS))) {
-            while (true) {
+            //while (true) {
                 Session session = new Session(server.accept());
-                session.start(); // it does not block this thread
-            }
+                session.start();// it does not block this thread
+                session.join(5000);
+            //}
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 }
@@ -32,7 +36,6 @@ class Session extends Thread {
     }
 
     public void run() {
-        System.out.println("Server started!");
         try (
                 DataInputStream input = new DataInputStream(socket.getInputStream());
                 DataOutputStream output = new DataOutputStream(socket.getOutputStream())
@@ -45,6 +48,7 @@ class Session extends Thread {
             System.out.printf("Sent: %s%n", outputMsg);
             //}
             socket.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -12,9 +12,9 @@ public class Main {
 
     private static Set<String> server = new HashSet<>();
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         run();
-    }
+    }*/
 
     private static void run() {
         String command = null;
