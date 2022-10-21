@@ -5,8 +5,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.sql.SQLOutput;
-import java.util.Objects;
 import java.util.Scanner;
 
 public class Client {
@@ -19,15 +17,27 @@ public class Client {
     private static String response;
 
     public static void main(String[] args) {
+        String action;
+        String fileName = null;
+        String text = null;
 
         System.out.print("Enter action (1 - get a file, 2 - create a file, 3 - delete a file): ");
-        String action = getInput();
+        action = getInput().strip();
+        if (!"exit".equals(action)) {
+            System.out.print("Enter filename: ");
+            fileName = getInput();
+            if ("1".equals(action)) {
+                System.out.print("Enter file content: ");
+                text = getInput();
+            }
+        }
+
         switch (action) {
-            case "1" : sendGet();
+            case "1" : sendGet(fileName, text);
             break;
-            case "2" : sendCreate();
+            case "2" : sendCreate(fileName);
             break;
-            case "3" : sendDelete();
+            case "3" : sendDelete(fileName);
             break;
             case "exit" : sendExit();
             break;
@@ -42,37 +52,33 @@ public class Client {
         return scanner.nextLine();
     }
 
-    private static void sendGet() {
-        request.append("GET ");
-        System.out.print("Enter filename: ");
-        request.append(getInput());
-        request.append(" ");
-        System.out.print("Enter file content: ");
-        request.append(getInput());
-        response = serve(request.toString());
+    private static void sendGet(String fileName, String text) {
+        request.append("GET ").append(fileName).append(" ").append(text);
+        serve(request.toString());
+        if (response.startsWith("200")) {
+            System.out.printf("The content of the file is: %s%n", response.replaceFirst("200\\s", ""));
+        } else {
+            System.out.println("The response says that the file was not found!");
+        }
 
     }
 
-    private static void sendCreate() {
-        request.append("CREATE ");
-        System.out.print("Enter filename: ");
-        request.append(getInput());
-        response = serve(request.toString());
+    private static void sendCreate(String fileName) {
+        request.append("CREATE ").append(fileName);
+        serve(request.toString());
     }
 
-    private static void sendDelete() {
-        request.append("DELETE ");
-        System.out.print("Enter filename: ");
-        request.append(getInput());
-        response = serve(request.toString());
+    private static void sendDelete(String fileName) {
+        request.append("DELETE ").append(fileName);
+        serve(request.toString());
     }
 
     private static void sendExit() {
         request.append("EXIT");
     }
 
-    private static String serve(String request) {
-        String response = null;
+    private static void serve(String request) {
+
         try (
                 Socket socket = new Socket(InetAddress.getByName(SERVER_ADDRESS), SERVER_PORT);
                 DataInputStream input = new DataInputStream(socket.getInputStream());
@@ -86,6 +92,5 @@ public class Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return response;
     }
 }
