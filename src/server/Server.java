@@ -40,13 +40,10 @@ class Session extends Thread {
                 DataInputStream input = new DataInputStream(socket.getInputStream());
                 DataOutputStream output = new DataOutputStream(socket.getOutputStream())
         ) {
-            //for (int i = 0; i < 5; i++) {
-            String inputMsg = input.readUTF(); // reading the next client message
-            System.out.printf("Received: %s%n", inputMsg);
-            String outputMsg = "All files were sent!";
+            String inputMsg = input.readUTF();
+            String outputMsg = Files.run(inputMsg); // reading the next client message
             output.writeUTF(outputMsg); // resend it to the client
-            System.out.printf("Sent: %s%n", outputMsg);
-            //}
+
             socket.close();
 
         } catch (IOException e) {

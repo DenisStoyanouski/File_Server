@@ -26,16 +26,16 @@ public class Client {
         if (!"exit".equals(action)) {
             System.out.print("Enter filename: ");
             fileName = getInput();
-            if ("1".equals(action)) {
+            if ("2".equals(action)) {
                 System.out.print("Enter file content: ");
                 text = getInput();
             }
         }
 
         switch (action) {
-            case "1" : sendGet(fileName, text);
+            case "1" : sendGet(fileName);
             break;
-            case "2" : sendCreate(fileName);
+            case "2" : sendCreate(fileName, text);
             break;
             case "3" : sendDelete(fileName);
             break;
@@ -52,8 +52,8 @@ public class Client {
         return scanner.nextLine();
     }
 
-    private static void sendGet(String fileName, String text) {
-        request.append("GET ").append(fileName).append(" ").append(text);
+    private static void sendGet(String fileName) {
+        request.append("GET ").append(fileName);
         serve(request.toString());
         if (response.startsWith("200")) {
             System.out.printf("The content of the file is: %s%n", response.replaceFirst("200\\s", ""));
@@ -63,13 +63,13 @@ public class Client {
 
     }
 
-    private static void sendCreate(String fileName) {
-        request.append("CREATE ").append(fileName);
+    private static void sendCreate(String fileName, String text) {
+        request.append("PUT ").append(fileName).append(" ").append(text);
         serve(request.toString());
         if ("200".equals(response)) {
             System.out.println("The response says that file was created!");
         } else {
-            System.out.println("The response says that the file was not found!");
+            System.out.println("The response says that the file with this name already exists!");
         }
     }
 
