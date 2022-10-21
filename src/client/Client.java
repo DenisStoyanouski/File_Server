@@ -13,41 +13,62 @@ public class Client {
     private static final String SERVER_ADDRESS = "127.0.0.1";
     private static final int SERVER_PORT = 23456;
 
+
     private static final StringBuilder request = new StringBuilder();
+
+    private static String response;
 
     public static void main(String[] args) {
 
         System.out.print("Enter action (1 - get a file, 2 - create a file, 3 - delete a file): ");
         String action = getInput();
         switch (action) {
-            case "1" : request.append("GET ");
+            case "1" : sendGet();
             break;
-            case "2" : request.append("CREATE ");
+            case "2" : sendCreate();
             break;
-            case "3" : request.append("DELETE ");
+            case "3" : sendDelete();
             break;
-            case "exit" : request.append("EXIT");
+            case "exit" : sendExit();
             break;
             default :
                 System.out.println("Unknown action");
                 break;
         }
-        if (!request.toString().contains("EXIT")) {
-            System.out.print("Enter filename: ");
-            request.append(getInput());
-            request.append(" ");
-            if (request.toString().contains("GET")) {
-                System.out.print("Enter file content: ");
-                request.append(getInput());
-            }
-        }
-
-
     }
 
     private static String getInput() {
         Scanner scanner = new Scanner(System.in);
         return scanner.nextLine();
+    }
+
+    private static void sendGet() {
+        request.append("GET ");
+        System.out.print("Enter filename: ");
+        request.append(getInput());
+        request.append(" ");
+        System.out.print("Enter file content: ");
+        request.append(getInput());
+        response = serve(request.toString());
+
+    }
+
+    private static void sendCreate() {
+        request.append("CREATE ");
+        System.out.print("Enter filename: ");
+        request.append(getInput());
+        response = serve(request.toString());
+    }
+
+    private static void sendDelete() {
+        request.append("DELETE ");
+        System.out.print("Enter filename: ");
+        request.append(getInput());
+        response = serve(request.toString());
+    }
+
+    private static void sendExit() {
+        request.append("EXIT");
     }
 
     private static String serve(String request) {
