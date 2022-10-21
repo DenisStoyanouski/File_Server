@@ -66,11 +66,21 @@ public class Client {
     private static void sendCreate(String fileName) {
         request.append("CREATE ").append(fileName);
         serve(request.toString());
+        if ("200".equals(response)) {
+            System.out.printf("The response says that file was created!");
+        } else {
+            System.out.println("The response says that the file was not found!");
+        }
     }
 
     private static void sendDelete(String fileName) {
         request.append("DELETE ").append(fileName);
         serve(request.toString());
+        if ("200".equals(response)) {
+            System.out.printf("The response says that the file was successfully deleted!%n");
+        } else {
+            System.out.println("The response says that the file was not found!");
+        }
     }
 
     private static void sendExit() {
