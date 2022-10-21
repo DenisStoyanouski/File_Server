@@ -42,7 +42,9 @@ class Session extends Thread {
         ) {
             String inputMsg = input.readUTF();
             String outputMsg = Files.run(inputMsg); // reading the next client message
-            output.writeUTF(outputMsg); // resend it to the client
+            if (outputMsg != null) {
+                output.writeUTF(outputMsg); // resend it to the client
+            }
 
             socket.close();
 

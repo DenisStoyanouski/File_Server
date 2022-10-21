@@ -13,8 +13,11 @@ public class Files {
     private static String response;
 
     static String run(String request) {
-
+        server.add("text.txt");
         String command = request.split("\\s")[0];
+        if ("EXIT".equals(command)) {
+            return null;
+        }
         String fileName = request.split("\\s")[1];
         String text = request.replaceFirst(command, "").replaceFirst(fileName,"");
 

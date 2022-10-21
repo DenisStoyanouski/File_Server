@@ -98,6 +98,7 @@ public class Client {
             output.writeUTF(request);
             System.out.println("The request was sent.");
             response = input.readUTF();
+            System.out.println(response);
 
         } catch (IOException e) {
             e.printStackTrace();
