@@ -67,7 +67,7 @@ public class Client {
         request.append("CREATE ").append(fileName);
         serve(request.toString());
         if ("200".equals(response)) {
-            System.out.printf("The response says that file was created!");
+            System.out.println("The response says that file was created!");
         } else {
             System.out.println("The response says that the file was not found!");
         }
@@ -77,7 +77,7 @@ public class Client {
         request.append("DELETE ").append(fileName);
         serve(request.toString());
         if ("200".equals(response)) {
-            System.out.printf("The response says that the file was successfully deleted!%n");
+            System.out.println("The response says that the file was successfully deleted!");
         } else {
             System.out.println("The response says that the file was not found!");
         }
@@ -85,6 +85,7 @@ public class Client {
 
     private static void sendExit() {
         request.append("EXIT");
+        serve(request.toString());
     }
 
     private static void serve(String request) {
@@ -98,7 +99,6 @@ public class Client {
             System.out.println("The request was sent.");
             response = input.readUTF();
 
-            //}
         } catch (IOException e) {
             e.printStackTrace();
         }
