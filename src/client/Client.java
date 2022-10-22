@@ -56,7 +56,7 @@ public class Client {
         request.append("GET ").append(fileName);
         serve(request.toString());
         if (response.startsWith("200")) {
-            System.out.printf("The content of the file is: %s%n", response.replaceFirst("200\\s", ""));
+            System.out.printf("The content of the file is: %s%n", response.replaceFirst("200\\s+", ""));
         } else {
             System.out.println("The response says that the file was not found!");
         }
@@ -99,7 +99,6 @@ public class Client {
             System.out.println("The request was sent.");
             if (!"EXIT".equals(request)) {
                 response = input.readUTF();
-                System.out.println(response);
             }
         } catch (IOException e) {
             e.printStackTrace();
