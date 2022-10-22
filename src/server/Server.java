@@ -31,8 +31,6 @@ public class Server {
 
 class Session extends Thread {
     private final Socket socket;
-    private static String inputMsg;
-    private static String outputMsg;
 
     public Session(Socket socketForClient) {
         this.socket = socketForClient;
@@ -43,8 +41,9 @@ class Session extends Thread {
                 DataInputStream input = new DataInputStream(socket.getInputStream());
                 DataOutputStream output = new DataOutputStream(socket.getOutputStream())
         ) {
-            inputMsg = input.readUTF();
-            outputMsg = Files.run(inputMsg); // reading the next client message
+            String inputMsg = input.readUTF();
+            String outputMsg = Files.run(inputMsg); // reading the next client message
+
             if (outputMsg != null) {
                 output.writeUTF(outputMsg); // resend it to the client
             } else {
