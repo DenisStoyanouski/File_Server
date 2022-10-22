@@ -1,5 +1,9 @@
 package server;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Objects;
@@ -36,8 +40,13 @@ public class Files {
     }
 
     private static String add(String fileName, String text) {
-
-        return server.add(fileName) ? "200" : "403";
+        File file = new File(fileName);
+        try (FileWriter writer = new FileWriter(file)) {
+            writer.write(text);
+        } catch (IOException e) {
+            return "403";
+        }
+        return "200";
     }
 
     private static String get(String fileName) {
