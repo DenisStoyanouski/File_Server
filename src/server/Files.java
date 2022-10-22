@@ -1,12 +1,11 @@
 package server;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Scanner;
 import java.util.Set;
 
 
@@ -27,10 +26,10 @@ public class Files {
         String text = request.replaceFirst(command, "").replaceFirst(fileName,"");
 
             switch (Objects.requireNonNull(command)) {
-                case "PUT" :  response = add(fileName, text);
-                break;
                 case "GET" : response = get(fileName);
                 break;
+                case "PUT" :  response = put(fileName, text);
+                    break;
                 case "DELETE" : response = delete(fileName);
                 break;
                 default:
@@ -39,18 +38,34 @@ public class Files {
         return response;
     }
 
-    private static String add(String fileName, String text) {
-        File file = new File(fileName);
-        try (FileWriter writer = new FileWriter(file)) {
-            writer.write(text);
-        } catch (IOException e) {
-            return "403";
+    private static String get(String fileName) {
+        StringBuilder line = new StringBuilder();
+        File file = new File(String.format(".\\%s", fileName));
+        if (!file.exists()) {
+            return "404";
         }
-        return "200";
+        try (Scanner scanner = new Scanner(file)) {
+            line.append("200 ");
+            while (scanner.hasNext()) {
+                line.append(scanner.nextLine());
+            }
+        } catch (IOException e) {
+            return "500";
+        }
+        return line.toString();
     }
 
-    private static String get(String fileName) {
-        return server.contains(fileName) ? "200" : "404";
+    private static String put(String fileName, String text) {
+        File file = new File(fileName);
+        if (file.exists()) {
+            return "403";
+        }
+        try (FileWriter writer = new FileWriter(String.format(".\\%s", fileName))) {
+            writer.write(text);
+        } catch (IOException e) {
+            return "500";
+        }
+        return "200";
     }
 
     private static String delete(String fileName) {
