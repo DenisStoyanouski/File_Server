@@ -9,17 +9,18 @@ import java.net.Socket;
 
 public class Server {
     private static final int PORT = 23456;
-
     private static final String SERVER_ADDRESS = "127.0.0.1";
+
+    static boolean isServerClosed = false;
 
     public static void main(String[] args) {
         System.out.println("Server started!");
         try (ServerSocket server = new ServerSocket(PORT, 50, InetAddress.getByName(SERVER_ADDRESS))) {
-            //while (true) {
+            while (!isServerClosed) {
                 Session session = new Session(server.accept());
                 session.start();// it does not block this thread
                 session.join(5000);
-            //}
+            }
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -30,6 +31,8 @@ public class Server {
 
 class Session extends Thread {
     private final Socket socket;
+    private static String inputMsg;
+    private static String outputMsg;
 
     public Session(Socket socketForClient) {
         this.socket = socketForClient;
@@ -40,16 +43,18 @@ class Session extends Thread {
                 DataInputStream input = new DataInputStream(socket.getInputStream());
                 DataOutputStream output = new DataOutputStream(socket.getOutputStream())
         ) {
-            String inputMsg = input.readUTF();
-            String outputMsg = Files.run(inputMsg); // reading the next client message
+            inputMsg = input.readUTF();
+            outputMsg = Files.run(inputMsg); // reading the next client message
             if (outputMsg != null) {
                 output.writeUTF(outputMsg); // resend it to the client
+            } else {
+                Server.isServerClosed = true;
             }
-
             socket.close();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 }
