@@ -1,23 +1,14 @@
 package server;
 
 import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Scanner;
-import java.util.Set;
-
 
 
 public class Files {
 
-    private static Set<String> server = new HashSet<>();
-
-    private static String response;
-
     static String run(String request) {
-        server.add("text.txt");
+
         String command = request.split("\\s")[0];
         if ("EXIT".equals(command)) {
             return null;
@@ -25,7 +16,8 @@ public class Files {
         String fileName = request.split("\\s")[1];
         String text = request.replaceFirst(command, "").replaceFirst(fileName,"");
 
-            switch (Objects.requireNonNull(command)) {
+        String response;
+        switch (Objects.requireNonNull(command)) {
                 case "GET" : response = get(fileName);
                 break;
                 case "PUT" :  response = put(fileName, text);
@@ -56,11 +48,11 @@ public class Files {
     }
 
     private static String put(String fileName, String text) {
-        File file = new File(fileName);
+        File file = new File(String.format(".\\%s", fileName));
         if (file.exists()) {
             return "403";
         }
-        try (FileWriter writer = new FileWriter(String.format(".\\%s", fileName))) {
+        try (FileWriter writer = new FileWriter(file)) {
             writer.write(text);
         } catch (IOException e) {
             return "500";
@@ -69,7 +61,11 @@ public class Files {
     }
 
     private static String delete(String fileName) {
-        return server.remove(fileName) ? "200" : "404";
+        File file = new File(String.format(".\\%s", fileName));
+        if (!file.exists()) {
+            return "404";
+        }
+        return  file.delete() ? "200" : "500";
     }
 
 }
