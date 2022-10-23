@@ -17,6 +17,7 @@ public class Client {
     private static String response;
 
     public static void main(String[] args) {
+
         String action;
         String fileName = null;
         String text = null;
