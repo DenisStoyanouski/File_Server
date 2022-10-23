@@ -32,7 +32,7 @@ public class Files {
 
     private static String get(String fileName) {
         StringBuilder line = new StringBuilder();
-        File file = new File(String.format(".\\%s", fileName));
+        File file = new File(String.format(".\\FileServer\\server\\data\\%s", fileName));
         if (!file.exists()) {
             return "404";
         }
@@ -48,7 +48,7 @@ public class Files {
     }
 
     private static String put(String fileName, String text) {
-        File file = new File(String.format(".\\%s", fileName));
+        File file = new File(String.format(".\\FileServer\\server\\data\\%s", fileName));
         if (file.exists()) {
             return "403";
         }
@@ -61,7 +61,7 @@ public class Files {
     }
 
     private static String delete(String fileName) {
-        File file = new File(String.format(".\\%s", fileName));
+        File file = new File(String.format(".\\FileServer\\server\\data\\%s", fileName));
         if (!file.exists()) {
             return "404";
         }
