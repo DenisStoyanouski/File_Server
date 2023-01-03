@@ -14,12 +14,13 @@ public class Server {
     static boolean isServerClosed = false;
 
     public static void main(String[] args) {
+
         System.out.println("Server started!");
         try (ServerSocket server = new ServerSocket(PORT, 50, InetAddress.getByName(SERVER_ADDRESS))) {
             while (!isServerClosed) {
                 Session session = new Session(server.accept());
                 session.start();// it does not block this thread
-                session.join(5000);
+                session.join(500);
             }
         } catch (IOException e) {
             e.printStackTrace();

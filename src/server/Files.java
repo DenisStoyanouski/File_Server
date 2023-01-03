@@ -6,9 +6,11 @@ import java.util.Scanner;
 
 
 public class Files {
+    static String dirPath = System.getProperty("user.dir") + File.separator + "src" + File.separator + "server" + File.separator + "data" + File.separator;
 
+    //static String dirPath = System.getProperty("user.dir") + File.separator + "File Server" + File.separator + "task" + File.separator + "src" + File.separator + "server" + File.separator + "data" + File.separator;
     static String run(String request) {
-
+        new File(dirPath).mkdirs();
         String command = request.split("\\s")[0];
         if ("EXIT".equals(command)) {
             return null;
@@ -19,11 +21,11 @@ public class Files {
         String response;
         switch (Objects.requireNonNull(command)) {
                 case "GET" : response = get(fileName);
-                break;
+                    break;
                 case "PUT" :  response = put(fileName, text);
                     break;
                 case "DELETE" : response = delete(fileName);
-                break;
+                    break;
                 default:
                     response = "Unknown command";
         }
@@ -32,7 +34,7 @@ public class Files {
 
     private static String get(String fileName) {
         StringBuilder line = new StringBuilder();
-        File file = new File(String.format(".\\\\File Server\\\\task\\\\src\\\\server\\\\data\\\\%s", fileName));
+        File file = new File(String.format("%s%s", dirPath, fileName));
         if (!file.exists()) {
             return "404";
         }
@@ -48,7 +50,7 @@ public class Files {
     }
 
     private static String put(String fileName, String text) {
-        File file = new File(String.format(".\\\\File Server\\\\task\\\\src\\\\server\\\\data\\\\%s", fileName));
+        File file = new File(String.format("%s%s", dirPath, fileName));
         if (file.exists()) {
             return "403";
         }
@@ -61,7 +63,7 @@ public class Files {
     }
 
     private static String delete(String fileName) {
-        File file = new File(String.format(".\\\\File Server\\\\task\\\\src\\\\server\\\\data\\\\%s", fileName));
+        File file = new File(String.format("%s%s", dirPath, fileName));
         if (!file.exists()) {
             return "404";
         }

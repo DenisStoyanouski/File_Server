@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 public class Client {
     private static final String SERVER_ADDRESS = "127.0.0.1";
@@ -16,8 +17,8 @@ public class Client {
 
     private static String response;
 
-    public static void main(String[] args) {
-
+    public static void main(String[] args) throws InterruptedException {
+        TimeUnit.SECONDS.sleep(1);
         String action;
         String fileName = null;
         String text = null;
@@ -70,7 +71,7 @@ public class Client {
         if ("200".equals(response)) {
             System.out.println("The response says that file was created!");
         } else {
-            System.out.println("The response says that the file with this name already exists!");
+            System.out.println("The response says that creating the file was forbidden!");
         }
     }
 
