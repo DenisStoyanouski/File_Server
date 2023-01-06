@@ -103,17 +103,19 @@ public class Client {
             /*if (!"EXIT".equals(request)) {
                 response = input.readUTF();
             }*/
-            byte[] message = null;
+            if (request.contains("PUT")) {
+                byte[] message = null;
                 try (FileInputStream fis = new FileInputStream(file)) {
                     message = fis.readAllBytes();
 
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            output.writeInt(message.length); // write length of the message
-            System.out.println(message.length);
-            output.write(message);// write the message
-            System.out.println(message);
+                output.writeInt(message.length); // write length of the message
+                System.out.println(message.length);
+                output.write(message);// write the message
+                System.out.println(message);
+            }
 
             response  = input.readUTF();
 
