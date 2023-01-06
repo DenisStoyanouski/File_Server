@@ -6,23 +6,22 @@ import java.util.Scanner;
 
 
 public class Files {
-    static String dirPath = System.getProperty("user.dir") + File.separator + "src" + File.separator + "server" + File.separator + "data" + File.separator;
+    //static String dirPath = System.getProperty("user.dir") + File.separator + "src" + File.separator + "server" + File.separator + "data" + File.separator;
 
-    //static String dirPath = System.getProperty("user.dir") + File.separator + "File Server" + File.separator + "task" + File.separator + "src" + File.separator + "server" + File.separator + "data" + File.separator;
-    static String run(String request) {
+    static String dirPath = System.getProperty("user.dir") + File.separator + "File Server" + File.separator + "task" + File.separator + "src" + File.separator + "server" + File.separator + "data" + File.separator;
+    static String run(String request, byte[] message) {
         new File(dirPath).mkdirs();
         String command = request.split("\\s")[0];
         if ("EXIT".equals(command)) {
             return null;
         }
         String fileName = request.split("\\s")[1];
-        String text = request.replaceFirst(command, "").replaceFirst(fileName,"");
 
         String response;
         switch (Objects.requireNonNull(command)) {
                 case "GET" : response = get(fileName);
                     break;
-                case "PUT" :  response = put(fileName, text);
+                case "PUT" :  response = put(fileName, message);
                     break;
                 case "DELETE" : response = delete(fileName);
                     break;
@@ -49,16 +48,18 @@ public class Files {
         return line.toString();
     }
 
-    private static String put(String fileName, String text) {
+    private static String put(String fileName, byte[] message) {
         File file = new File(String.format("%s%s", dirPath, fileName));
         if (file.exists()) {
             return "403";
         }
-        try (FileWriter writer = new FileWriter(file)) {
-            writer.write(text);
+
+        try (FileOutputStream writer = new FileOutputStream(file)) {
+            writer.write(message);
         } catch (IOException e) {
             return "500";
         }
+
         return "200";
     }
 
