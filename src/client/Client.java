@@ -2,6 +2,7 @@ package client;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -12,6 +13,8 @@ public class Client {
     private static final String SERVER_ADDRESS = "127.0.0.1";
     private static final int SERVER_PORT = 23456;
 
+    static String dirPath = System.getProperty("user.dir") + File.separator + "src" + File.separator + "client" + File.separator + "data" + File.separator;
+
 
     private static final StringBuilder request = new StringBuilder();
 
@@ -21,23 +24,14 @@ public class Client {
         TimeUnit.SECONDS.sleep(1);
         String action;
         String fileName = null;
-        String text = null;
 
-        System.out.print("Enter action (1 - get a file, 2 - create a file, 3 - delete a file): ");
+        System.out.print("Enter action (1 - get a file, 2 - save a file, 3 - delete a file): ");
         action = getInput().strip();
-        if (!"exit".equals(action)) {
-            System.out.print("Enter filename: ");
-            fileName = getInput();
-            if ("2".equals(action)) {
-                System.out.print("Enter file content: ");
-                text = getInput();
-            }
-        }
 
         switch (action) {
             case "1" : sendGet(fileName);
             break;
-            case "2" : sendCreate(fileName, text);
+            case "2" : saveFile();
             break;
             case "3" : sendDelete(fileName);
             break;
@@ -65,8 +59,12 @@ public class Client {
 
     }
 
-    private static void sendCreate(String fileName, String text) {
-        request.append("PUT ").append(fileName).append(" ").append(text);
+    private static void saveFile() {
+        System.out.println("Enter name of the file:");
+        String fileName = getInput();
+        System.out.println("Enter name of the file to be saved on server:");
+        String fileNameForServer = getInput();
+        request.append("PUT ").append(fileName + " ").append(fileNameForServer + " ");
         serve(request.toString());
         if ("200".equals(response)) {
             System.out.println("The response says that file was created!");
@@ -91,12 +89,14 @@ public class Client {
     }
 
     private static void serve(String request) {
+        String[] req = request.split("\\s");
 
         try (
                 Socket socket = new Socket(InetAddress.getByName(SERVER_ADDRESS), SERVER_PORT);
                 DataInputStream input = new DataInputStream(socket.getInputStream());
                 DataOutputStream output  = new DataOutputStream(socket.getOutputStream())
         ) {
+
             output.writeUTF(request);
             System.out.println("The request was sent.");
             if (!"EXIT".equals(request)) {
