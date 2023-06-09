@@ -3,7 +3,6 @@ package client;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.sql.SQLOutput;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
@@ -11,7 +10,7 @@ public class Client {
     private static final String SERVER_ADDRESS = "127.0.0.1";
     private static final int SERVER_PORT = 23456;
 
-    static String dirPath = System.getProperty("user.dir") + File.separator + "File Server"+ File.separator + "task"+ File.separator + "src" + File.separator + "client" + File.separator + "data" + File.separator;
+    static String dirPath = System.getProperty("user.dir") + File.separator + "File Server" + File.separator + "task" + File.separator + "src" + File.separator + "client" + File.separator + "data" + File.separator;
 
 
     private static final StringBuilder request = new StringBuilder();
@@ -27,15 +26,19 @@ public class Client {
         action = getInput().strip();
 
         switch (action) {
-            case "1" : sendGet(fileName);
-            break;
-            case "2" : saveFile();
-            break;
-            case "3" : sendDelete(fileName);
-            break;
-            case "exit" : sendExit();
-            break;
-            default :
+            case "1":
+                getFile();
+                break;
+            case "2":
+                saveFile();
+                break;
+            case "3":
+                deleteFile();
+                break;
+            case "exit":
+                sendExit();
+                break;
+            default:
                 System.out.println("Unknown action");
                 break;
         }
@@ -43,11 +46,11 @@ public class Client {
 
     private static String getInput() {
         Scanner scanner = new Scanner(System.in);
-        return scanner.nextLine();
+        return scanner.nextLine().strip();
     }
 
-    private static void sendGet(String fileName) {
-        request.append("GET ").append(fileName);
+    private static void getFile() {
+        request.append("GET ").append(getFileSearchOption());
         serve(request.toString());
         if (response.startsWith("200")) {
             System.out.printf("The content of the file is: %s%n", response.replaceFirst("200\\s+", ""));
@@ -62,7 +65,7 @@ public class Client {
         String fileName = getInput();
         System.out.print("Enter name of the file to be saved on server:");
         String fileNameForServer = getInput();
-        request.append("PUT ").append(fileName + " ").append(fileNameForServer);
+        request.append("PUT ").append(fileName).append(" ").append(fileNameForServer);
         serve(request.toString());
         if ("200".equals(response)) {
             System.out.println("The response says that file was created!");
@@ -71,8 +74,8 @@ public class Client {
         }
     }
 
-    private static void sendDelete(String fileName) {
-        request.append("DELETE ").append(fileName);
+    private static void deleteFile() {
+        request.append("DELETE ").append(getFileSearchOption());
         serve(request.toString());
         if ("200".equals(response)) {
             System.out.println("The response says that the file was successfully deleted!");
@@ -88,7 +91,7 @@ public class Client {
 
     private static void serve(String request) {
         String[] req = request.split("\\s");
-        File file = new File(String.format("%s%s",dirPath,req[1]));
+        File file = new File(String.format("%s%s", dirPath, req[1]));
         if (!file.exists()) {
             System.out.println("can't find file");
             return;
@@ -96,7 +99,7 @@ public class Client {
         try (
                 Socket socket = new Socket(InetAddress.getByName(SERVER_ADDRESS), SERVER_PORT);
                 DataInputStream input = new DataInputStream(socket.getInputStream());
-                DataOutputStream output  = new DataOutputStream(socket.getOutputStream())
+                DataOutputStream output = new DataOutputStream(socket.getOutputStream())
         ) {
             output.writeUTF(request);
             System.out.println("The request was sent.");
@@ -117,10 +120,35 @@ public class Client {
                 System.out.println(message);
             }
 
-            response  = input.readUTF();
+            response = input.readUTF();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    private static String getFileSearchOption() {
+        String option = "";
+        String input;
+        while (option.isEmpty()) {
+            System.out.print("Do you want to get the file by name or by id (1 - name, 2 - id): ");
+            switch (getInput()) {
+                case "1":
+                    System.out.print("Enter name: ");
+                    input = getInput();
+                    option = input.matches(".+\\..+") ? "BY_NAME " + input : "";
+                    break;
+                case "2":
+                    System.out.print("Enter id: ");
+                    input = getInput();
+                    option = input.matches("\\d+") ? "BY_ID " + input : "";
+                    break;
+                default:
+                    System.out.println("Choose right option 1 or 2");
+                    break;
+            }
+        }
+        return option;
+    }
+
 }

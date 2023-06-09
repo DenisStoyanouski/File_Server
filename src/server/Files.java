@@ -9,6 +9,7 @@ public class Files {
     //static String dirPath = System.getProperty("user.dir") + File.separator + "src" + File.separator + "server" + File.separator + "data" + File.separator;
 
     static String dirPath = System.getProperty("user.dir") + File.separator + "File Server" + File.separator + "task" + File.separator + "src" + File.separator + "server" + File.separator + "data" + File.separator;
+
     static String run(String request, byte[] message) {
         new File(dirPath).mkdirs();
         String command = request.split("\\s")[0];
@@ -19,14 +20,17 @@ public class Files {
 
         String response;
         switch (Objects.requireNonNull(command)) {
-                case "GET" : response = get(fileName);
-                    break;
-                case "PUT" :  response = put(fileName, message);
-                    break;
-                case "DELETE" : response = delete(fileName);
-                    break;
-                default:
-                    response = "Unknown command";
+            case "GET":
+                response = get(fileName);
+                break;
+            case "PUT":
+                response = put(fileName, message);
+                break;
+            case "DELETE":
+                response = delete(fileName);
+                break;
+            default:
+                response = "Unknown command";
         }
         return response;
     }
@@ -68,7 +72,7 @@ public class Files {
         if (!file.exists()) {
             return "404";
         }
-        return  file.delete() ? "200" : "500";
+        return file.delete() ? "200" : "500";
     }
 
 }
